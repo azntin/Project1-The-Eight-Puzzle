@@ -15,8 +15,8 @@ int main() {
     if (puzzleChoice == 2) { 
         cout << "Enter your puzzle, use a zero to represent the blank" << endl;
         int input;
-        for(int i = 0; i < 3; ++i){
-            for(int j = 0; j < 3; ++j){
+        for(int i = 0; i < 3; ++i) {
+            for(int j = 0; j < 3; ++j) {
                 cin >> input;
                 // vector<vector>[i][j] = input.
             }
@@ -48,7 +48,6 @@ int main() {
         cout << "To solve this problem the search algorithm expanded a total of XXX (correct numbers should appear here) nodes." << endl;
         cout << "The maximum number of nodes in the queue at any one time: YYY." << endl;
         cout << "The depth of the goal node was ZZZ." << endl;  
-    }
 
-    return 0;
+        return 0;
 }
