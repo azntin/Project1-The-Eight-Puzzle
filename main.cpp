@@ -14,6 +14,15 @@ int main() {
     }
     if (puzzleChoice == 2) { 
         cout << "Enter your puzzle, use a zero to represent the blank" << endl;
+        int input;
+        for(int i = 0; i < 3; ++i){
+            for(int j = 0; j < 3; ++j){
+                cin >> input;
+                // vector<vector>[i][j] = input.
+            }
+        }
+    }
+
 
         cout << "Enter the first row, use space or tabs between numbers" << endl;
         //take input here and send to corresponding function or add to vector and then send 
