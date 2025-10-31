@@ -1,19 +1,30 @@
-#include "eight_puzzle.h"
 #include <vector>
 #include <iostream>
+#include "eight_puzzle.h"
 
 using namespace std;
 
+//global funcs for searching algorithms
 void UniformCostSearch(Problem p) {
-    cout << "Not yet implemented" << endl;
+    cout << "Not yet implemented. 1" << endl;
 }
 
 void AStarSearchMT(Problem p) {
-    cout << "Not yet implemented" << endl;
+    cout << "Not yet implemented. 2" << endl;
 }
 
 void AStarSearchED(Problem p) {
-    cout << "Not yet implemented" << endl;
+    cout << "Not yet implemented. 3" << endl;
+}
+
+void printState(const vector<vector<int>>& s){
+    for(int i = 0; i < 3; ++i){
+        for(int j = 0; j < 3; ++j){
+            if(s[i][j] == 0){cout << "X";}
+            else{cout << s[i][j];}
+        }
+        cout << endl;
+    }
 }
 
 bool Problem::isSolvable(const vector<vector<int>> s){
