@@ -5,16 +5,13 @@
 using namespace std;
 
 class Problem {
+public:
     vector<vector<int>> initial_state;
-    vector<vector<int>> goal_state : {
+    vector<vector<int>> goal_state = {
         {1, 2, 3},
         {4, 5, 6},
         {7, 8, 0}
     };
-
-    Problem(vector<vector<int>> init) {
-        initial_state = init;
-    }
 
     Problem() {
         initial_state = {
@@ -22,6 +19,10 @@ class Problem {
             {4, 2, 6},
             {7, 5, 8}
         };
+    }
+
+    Problem(vector<vector<int>> init) {
+        initial_state = init;
     }
 
     void up();
@@ -48,15 +49,11 @@ class Node {
         Node() {
             parent = nullptr; left = nullptr; right = nullptr;
             gCost = 0; hCost = 0; fCost = 0;
-            problem = {
-                {0,0,0},
-                {0,0,0},
-                {0,0,0}
-            };
+            problem = Problem({{0,0,0},{0,0,0},{0,0,0}});
         }
 
         Node(Problem p) {
-            parent = nullptr; left = nullptr; right = nullptr
+            parent = nullptr; left = nullptr; right = nullptr;
             gCost = 0; hCost = 0; fCost = 0;
             problem = p;
         }
