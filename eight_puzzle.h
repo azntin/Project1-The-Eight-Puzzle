@@ -22,6 +22,11 @@ struct Problem {
     bool isSolvable(const vector<vector<int>> s);
 };
 
+//global funcs
+void UniformCostSearch(Problem p);
+void AStarSearchMT(Problem p);
+void AStarSearchED(Problem p);
+
 struct Node {
         Problem problem;
         Node* parent;
@@ -80,12 +85,4 @@ struct State{
 
 };
 
-void printState(const vector<vector<int>> s){
-    for(int i = 0; i < 3; ++i){
-        for(int j = 0; j < 3; ++j){
-            if(s[i][j] == 0){cout << "X";}
-            else{cout << s[i][j];}
-        }
-        cout << endl;
-    }
-}
+void printState(const vector<vector<int>>& s);
