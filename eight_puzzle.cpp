@@ -50,13 +50,53 @@ void printState(const vector<vector<int>>& s){
 
         //Swapping the two values:
         int backup = initial_state[y][x];
-        initial_state[y][x] = initial_state[y-1][x];
-        initial_state[y-1][x] = backup;
+        initial_state[y][x] = initial_state[y+1][x];
+        initial_state[y+1][x] = backup;
     }
 
-    void Problem::down(){}
-    void Problem::left(){}
-    void Problem::right(){}
+    void Problem::down(){
+        vector<int> position = findBlank(initial_state);
+        int y = position[0];
+        int x = position[1];
+
+        if(y == 2){
+            return;
+        }
+
+        //Swapping the two values:
+        int backup = initial_state[y][x];
+        initial_state[y][x] = initial_state[y+1][x];
+        initial_state[y+1][x] = backup;
+    }
+
+    void Problem::left(){
+        vector<int> position = findBlank(initial_state);
+        int y = position[0];
+        int x = position[1];
+
+        if(x == 0){
+            return;
+        }
+
+        //Swapping the two values:
+        int backup = initial_state[y][x];
+        initial_state[y][x] = initial_state[y][x+1];
+        initial_state[y][x+1] = backup;
+    }
+    void Problem::right(){
+                vector<int> position = findBlank(initial_state);
+        int y = position[0];
+        int x = position[1];
+
+        if(x == 2){
+            return;
+        }
+
+        //Swapping the two values:
+        int backup = initial_state[y][x];
+        initial_state[y][x] = initial_state[y][x+1];
+        initial_state[y][x+1] = backup;
+    }
 
 bool Problem::isSolvable(const vector<vector<int>> s){
         vector<int> vec;
