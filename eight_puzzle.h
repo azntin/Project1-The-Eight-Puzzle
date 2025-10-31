@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -33,6 +34,26 @@ class Tree {
     int getMaxFrontierSize();
 };
 
+struct State{
+    vector<vector<int>> board;
+    int x; //x position of the blank (9)
+    int y; //y position of the blank (9)
+
+    char move; // can be up, down, left, or right
+    State* parent; //to print out the path.
+
+};
+
+void printState(const vector<vector<int>> s){
+    for(int i = 0; i < 3; ++i){
+        for(int j = 0; j < 3; ++j){
+            if(s[i][j] == 0){cout << "X";}
+            else{cout << s[i][j];}
+        }
+        cout << endl;
+    }
+}
+
 class Problem {
     vector<vector<int>> initial_state;
     vector<vector<int>> goal_state : {
@@ -51,11 +72,38 @@ class Problem {
             {4, 2, 6},
             {7, 5, 8}
         };
-    };
+    }
 
     void up();
     void down();
     void left();
     void right();
+
+    //Logic: let x = an instance where a big number comes before a small number.
+    //If x is even, the puzzle is solvable. Otherwise not.
+    bool isSolvable(const vector<vector<int>> s){
+        vector<int> vec;
+        int currPos;
+        int bigBeforeSmall = 0;
+
+        for(int i = 0; i < 3; ++i){
+            for(int j = 0; j < 3; ++j){
+                currPos = s[i][j];
+                if(currPos != 0){
+                    vec.push_back(currPos);
+                }
+            }
+        }
+
+        for(int i = 0; i < vec.size(); ++i){
+            for(int j = i+1; j < vec.size(); ++j){
+                if(vec.at(i) > vec.at(j)){
+                    bigBeforeSmall ++;
+                }
+            }
+        }
+        return (bigBeforeSmall % 2 == 0);
+    };
+  
     
 };
