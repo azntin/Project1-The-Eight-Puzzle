@@ -41,18 +41,18 @@ class Node {
         Node* left;
         Node* right;
         int gCost; // cost from the start
-        int hCost // heuristic goal
-        int fCost // g(n) + h(n)
+        int hCost; // heuristic goal
+        int fCost; // g(n) + h(n)
 
         //ctor
         Node() {
-            parent = nullptr; left = nullptr; right = nullptr
+            parent = nullptr; left = nullptr; right = nullptr;
             gCost = 0; hCost = 0; fCost = 0;
             problem = {
                 {0,0,0},
                 {0,0,0},
                 {0,0,0}
-            }
+            };
         }
 
         Node(Problem p) {
@@ -64,11 +64,11 @@ class Node {
         ~Node() {}
 
         //functions
-        bool compareGCost(const Node* a, const Node* b);
-        bool compareHCost(const Node* a, const Node* b);
-        int getGCost() {return this->gCost};
-        int getHCost() {return this->hCost};
-        int getFCost() {return this->fCost};
+        bool compareGCost(const Node* a, const Node* b) {return a->gCost < b->gCost;};
+        bool compareHCost(const Node* a, const Node* b) {return a->hCost < b->hCost;};
+        int getGCost() {return this->gCost;};
+        int getHCost() {return this->hCost;};
+        int getFCost() {return this->fCost;};
 };
 
 class Tree {
