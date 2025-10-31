@@ -4,26 +4,13 @@
 
 using namespace std;
 
-class Problem {
-public:
+struct Problem {
     vector<vector<int>> initial_state;
-    vector<vector<int>> goal_state = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 0}
-    };
+    vector<vector<int>> goal_state = {{1, 2, 3},{4, 5, 6},{7, 8, 0}};
 
-    Problem() {
-        initial_state = {
-            {1, 0, 3},
-            {4, 2, 6},
-            {7, 5, 8}
-        };
-    }
+    Problem() { initial_state = {{1, 0, 3},{4, 2, 6},{7, 5, 8}}; }
 
-    Problem(vector<vector<int>> init) {
-        initial_state = init;
-    }
+    Problem(vector<vector<int>> init) { initial_state = init; }
 
     void up();
     void down();
@@ -35,8 +22,7 @@ public:
     bool isSolvable(const vector<vector<int>> s);
 };
 
-class Node {
-    public:
+struct Node {
         Problem problem;
         Node* parent;
         Node* left;
@@ -68,8 +54,7 @@ class Node {
         int getFCost() {return this->fCost;};
 };
 
-class Tree {
-    public:
+struct Tree {
     Node* root;
 
     //ctor
