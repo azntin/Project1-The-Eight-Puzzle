@@ -5,7 +5,6 @@
 using namespace std;
 
 class Problem {
-    public:
     vector<vector<int>> initial_state;
     vector<vector<int>> goal_state : {
         {1, 2, 3},
@@ -23,16 +22,38 @@ class Problem {
             {4, 2, 6},
             {7, 5, 8}
         };
-    };
+    }
 
-    //functions
     void up();
     void down();
     void left();
     void right();
-    double euclideanDist(int a); // use this->initial_state within function
-    int misplacedTileDist(int a); // use this->initial_state within function
-    
+
+    //Logic: let x = an instance where a big number comes before a small number.
+    //If x is even, the puzzle is solvable. Otherwise not.
+    bool isSolvable(const vector<vector<int>> s){
+        vector<int> vec;
+        int currPos;
+        int bigBeforeSmall = 0;
+
+        for(int i = 0; i < 3; ++i){
+            for(int j = 0; j < 3; ++j){
+                currPos = s[i][j];
+                if(currPos != 0){
+                    vec.push_back(currPos);
+                }
+            }
+        }
+
+        for(int i = 0; i < vec.size(); ++i){
+            for(int j = i+1; j < vec.size(); ++j){
+                if(vec.at(i) > vec.at(j)){
+                    bigBeforeSmall ++;
+                }
+            }
+        }
+        return (bigBeforeSmall % 2 == 0);
+    };
 };
 
 class Node {
@@ -105,56 +126,4 @@ void printState(const vector<vector<int>> s){
         cout << endl;
     }
 }
-
-class Problem {
-    vector<vector<int>> initial_state;
-    vector<vector<int>> goal_state : {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 0}
-    };
-
-    Problem(vector<vector<int>> init) {
-        initial_state = init;
-    }
-
-    Problem() {
-        initial_state = {
-            {1, 0, 3},
-            {4, 2, 6},
-            {7, 5, 8}
-        };
-    }
-
-    void up();
-    void down();
-    void left();
-    void right();
-
-    //Logic: let x = an instance where a big number comes before a small number.
-    //If x is even, the puzzle is solvable. Otherwise not.
-    bool isSolvable(const vector<vector<int>> s){
-        vector<int> vec;
-        int currPos;
-        int bigBeforeSmall = 0;
-
-        for(int i = 0; i < 3; ++i){
-            for(int j = 0; j < 3; ++j){
-                currPos = s[i][j];
-                if(currPos != 0){
-                    vec.push_back(currPos);
-                }
-            }
-        }
-
-        for(int i = 0; i < vec.size(); ++i){
-            for(int j = i+1; j < vec.size(); ++j){
-                if(vec.at(i) > vec.at(j)){
-                    bigBeforeSmall ++;
-                }
-            }
-        }
-        return (bigBeforeSmall % 2 == 0);
-    };
-};
 
