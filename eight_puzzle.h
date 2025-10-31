@@ -4,17 +4,69 @@
 
 using namespace std;
 
+class Problem {
+    public:
+    vector<vector<int>> initial_state;
+    vector<vector<int>> goal_state : {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 0}
+    };
+
+    Problem(vector<vector<int>> init) {
+        initial_state = init;
+    }
+
+    Problem() {
+        initial_state = {
+            {1, 0, 3},
+            {4, 2, 6},
+            {7, 5, 8}
+        };
+    };
+
+    //functions
+    void up();
+    void down();
+    void left();
+    void right();
+    double euclideanDist(int a); // use this->initial_state within function
+    int misplacedTileDist(int a); // use this->initial_state within function
+    
+};
+
 class Node {
     public:
+        Problem problem;
         Node* parent;
         Node* left;
         Node* right;
-        int value;
+        int gCost; // cost from the start
+        int hCost // heuristic goal
+        int fCost // g(n) + h(n)
 
         //ctor
-        Node() : parent(nullptr), left(nullptr), right(nullptr), value(0) {}
-        Node(int num) : parent(nullptr), left(nullptr), right(nullptr), value(num) {}
+        Node() {
+            parent = nullptr; left = nullptr; right = nullptr
+            gCost = 0; hCost = 0; fCost = 0;
+            problem = {
+                {0,0,0},
+                {0,0,0},
+                {0,0,0}
+            }
+        }
+
+        Node(Problem p) {
+            parent = nullptr; left = nullptr; right = nullptr
+            gCost = 0; hCost = 0; fCost = 0;
+            problem = p;
+        }
+
         ~Node() {}
+
+        //functions
+        bool compareGCost(const Node* a, const Node* b);
+        bool compareHCost(const Node* a, const Node* b);
 };
 
 class Tree {
@@ -104,6 +156,5 @@ class Problem {
         }
         return (bigBeforeSmall % 2 == 0);
     };
-  
-    
 };
+
