@@ -16,6 +16,37 @@ void AStarSearchED(Problem p) {
     cout << "Not yet implemented" << endl;
 }
 
+    vector<int> findBlank(vector<vector<int>> s){
+        vector<int> coordinates;
+        for(int i = 0; i < 3; ++i){
+            for(int j = 0; j < 3; ++j){
+                if(s[i][j] == 0){
+                    coordinates.push_back(i);
+                    coordinates.push_back(j);
+                }
+            }
+        }
+        return coordinates;
+    }
+    void Problem::up(){
+        vector<int> position = findBlank(initial_state);
+        int y = position[0];
+        int x = position[1];
+
+        if(y == 0){
+            return;
+        }
+
+        //Swapping the two values:
+        int backup = initial_state[y][x];
+        initial_state[y][x] = initial_state[y-1][x];
+        initial_state[y-1][x] = backup;
+    }
+
+    void Problem::down(){}
+    void Problem::left(){}
+    void Problem::right(){}
+
 bool Problem::isSolvable(const vector<vector<int>> s){
         vector<int> vec;
         int currPos;
