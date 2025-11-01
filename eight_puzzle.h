@@ -20,6 +20,10 @@ struct Problem {
     //Logic: let x = an instance where a big number comes before a small number.
     //If x is even, the puzzle is solvable. Otherwise not.
     bool isSolvable(const vector<vector<int>> s);
+
+    //utilize goal state coordinates to calculate each distance
+    double euclideanDist(Problem p);
+    int misplacedTileDist(Problem p);
 };
 
 //global funcs

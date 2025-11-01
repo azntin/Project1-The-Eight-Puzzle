@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include "eight_puzzle.h"
 
 using namespace std;
@@ -15,6 +16,50 @@ void AStarSearchMT(Problem p) {
 
 void AStarSearchED(Problem p) {
     cout << "Not yet implemented. 3" << endl;
+}
+
+double Problem::euclideanDist(Problem p) {
+    double total = 0.0;
+    int goalVal, probVal;
+    vector<vector<int>> goal = this->goal_state;
+
+    for (int r = 0; r < 3; ++r) {
+        for (int c = 0; c < 3; ++c) {
+            goalVal = goal[r][c];
+            if (goalVal == 0) { continue; }
+            bool found = false;
+
+            for (int r1 = 0; r1 < 3 and !found; ++r1) {
+                for (int c1 = 0; c1 < 3; ++c1) {
+                    probVal = p.initial_state[r1][c1];
+                    if(probVal == 0) { continue; }
+
+                    if (goalVal == probVal) {
+                        total += sqrt(pow((r1 - r),2) + pow((c1 - c),2));
+                        found = true;
+                        break;
+                    }
+                    
+                }
+            }
+        }
+    }
+    return total;
+}
+
+int Problem::misplacedTileDist(Problem p) {
+    int total = 0;
+    vector<vector<int>> goal = this->goal_state;
+
+    for (int r = 0; r < 3; ++r) {
+        for (int c = 0; c < 3; ++c) {
+            if (p.initial_state[r][c] == 0) { continue; }
+            if (goal[r][c] != p.initial_state[r][c]) {
+                ++total;
+            }
+        }
+    }
+    return total;
 }
 
 void printState(const vector<vector<int>>& s){
