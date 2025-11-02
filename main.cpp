@@ -25,7 +25,7 @@ int main() {
         for (int i = 0; i < 3; ++i) { //takes input and fills puzzle correctly
             for (int j = 0; j < 3; ++j) {
                 cin >> input;
-                userPuzzle.at(i).at(j) = input;
+                userPuzzle[i][j] = input;
             }
         }
         p = Problem(userPuzzle);

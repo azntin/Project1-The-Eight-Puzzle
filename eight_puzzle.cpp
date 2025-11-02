@@ -29,7 +29,7 @@ double Problem::euclideanDist(Problem p) {
             if (goalVal == 0) { continue; }
             bool found = false;
 
-            for (int r1 = 0; r1 < 3 and !found; ++r1) {
+            for (int r1 = 0; r1 < 3 && !found; ++r1) {
                 for (int c1 = 0; c1 < 3; ++c1) {
                     probVal = p.initial_state[r1][c1];
                     if(probVal == 0) { continue; }
@@ -39,7 +39,6 @@ double Problem::euclideanDist(Problem p) {
                         found = true;
                         break;
                     }
-                    
                 }
             }
         }
@@ -159,7 +158,7 @@ bool Problem::isSolvable(const vector<vector<int>> s){
 
         for(int i = 0; i < vec.size(); ++i){
             for(int j = i+1; j < vec.size(); ++j){
-                if(vec.at(i) > vec.at(j)){
+                if(vec[i] > vec[j]){
                     bigBeforeSmall ++;
                 }
             }

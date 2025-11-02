@@ -39,18 +39,21 @@ struct Node {
         int gCost; // cost from the start
         int hCost; // heuristic goal
         int fCost; // g(n) + h(n)
+        int depth; //use for depth function 
 
         //ctor
         Node() {
             parent = nullptr; left = nullptr; right = nullptr;
             gCost = 0; hCost = 0; fCost = 0;
             problem = Problem({{0,0,0},{0,0,0},{0,0,0}});
+            depth = 0;
         }
 
         Node(Problem p) {
             parent = nullptr; left = nullptr; right = nullptr;
             gCost = 0; hCost = 0; fCost = 0;
             problem = p;
+            depth = 0;
         }
 
         ~Node() {}
