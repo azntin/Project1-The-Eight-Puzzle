@@ -56,6 +56,8 @@ Node UniformCostSearch(Problem p) {
         //here call up down left right functions
 
         Problem child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
+        //either fix this or fix up down left right func because they modify child everytime so it does up down left right on same child
+        //^^^^ IMPORTANT&&&&&
         for (int i = 0; i < 4; ++i) { //go through each up down left right func
             if (i == 0) {
                 child.up(); //i believe up down left right func modifies it in function itself and doesnt return anything
@@ -73,6 +75,7 @@ Node UniformCostSearch(Problem p) {
 
         //only if not in the frontier or explored set
         //do for each loop 
+        //fix this since it doesnt work properly
         bool inExplored = false;
         for (vector<vector<int>> x : explored) { //go through each element in explored
             if (x == child.initial_state) { //means we do not add to frontier since we already popped and explored it from vector explored
@@ -127,7 +130,7 @@ double Problem::euclideanDist(Problem p) {
     return total;
 }
 
-int Problem::misplacedTileDist(Problem p) {
+int Problem::misplacedTileDist(Problem p) { //maybe change this? because of how the up down left right function and instead send in curr state rather than entire problem p?
     int total = 0;
     vector<vector<int>> goal = this->goal_state;
 
