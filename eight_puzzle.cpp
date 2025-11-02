@@ -49,7 +49,7 @@ Node UniformCostSearch(Problem p) {
         //only if not in the frontier or explored set
         //here call up down left right functions
 
-        Problem child = curr.problem;   
+        Problem child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
         for (int i = 0; i < 4; ++i) { //go through each up down left right func
             if (i == 0) {
                 child.up(); //i believe up down left right func modifies it in function itself and doesnt return anything
