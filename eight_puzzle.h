@@ -26,11 +26,6 @@ struct Problem {
     int misplacedTileDist(Problem p);
 };
 
-//global funcs
-void UniformCostSearch(Problem p);
-void AStarSearchMT(Problem p);
-void AStarSearchED(Problem p);
-
 struct Node {
         Problem problem;
         Node* parent;
@@ -65,6 +60,11 @@ struct Node {
         int getHCost() {return this->hCost;};
         int getFCost() {return this->fCost;};
 };
+
+//global funcs
+Node UniformCostSearch(Problem p);
+Node AStarSearchMT(Problem p);
+Node AStarSearchED(Problem p);
 
 struct Tree {
     Node* root;
