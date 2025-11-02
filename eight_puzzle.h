@@ -7,10 +7,21 @@ using namespace std;
 struct Problem {
     vector<vector<int>> initial_state;
     vector<vector<int>> goal_state = {{1, 2, 3},{4, 5, 6},{7, 8, 0}};
+    //either add totalexpanded nodes here and maxfrontier size here or put in struct node; put it in problem cuz main uses problem p
+    int totalExpandedNodes;
+    int maxNumberOfNodesInQueue;
 
-    Problem() { initial_state = {{1, 0, 3},{4, 2, 6},{7, 5, 8}}; }
+    Problem() { 
+        initial_state = {{1, 0, 3},{4, 2, 6},{7, 5, 8}}; 
+        totalExpandedNodes = 0;
+        maxNumberOfNodesInQueue = 0;
+    }
 
-    Problem(vector<vector<int>> init) { initial_state = init; }
+    Problem(vector<vector<int>> init) { 
+        initial_state = init; 
+        totalExpandedNodes = 0;
+        maxNumberOfNodesInQueue = 0;
+    }
 
     void up();
     void down();
@@ -76,7 +87,6 @@ struct Tree {
     void addNode(int);
     void removeNode(int);
     void drawPath();
-    int depth();
     int getNodeCount();
     int getExpandedNodes();
     int getMaxFrontierSize();

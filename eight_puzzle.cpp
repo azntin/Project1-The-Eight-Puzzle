@@ -38,6 +38,12 @@ Node UniformCostSearch(Problem p) {
         Node curr = frontier.top();
         frontier.pop();
 
+        //for text print out in main at end for total expanded nodes and max nodes in queue 
+        p.totalExpandedNodes++;
+        if (frontier.size() > p.maxNumberOfNodesInQueue) {
+            p.maxNumberOfNodesInQueue = frontier.size();
+        }
+
         //if the node contains a goal statae then return the corresponding solution
         if (curr.problem.initial_state == p.goal_state) {
             return curr;
