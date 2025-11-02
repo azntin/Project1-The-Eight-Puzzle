@@ -73,9 +73,9 @@ struct Node {
 };
 
 //global funcs
-Node UniformCostSearch(Problem p);
-Node AStarSearchMT(Problem p);
-Node AStarSearchED(Problem p);
+Node UniformCostSearch(Problem& p);
+Node AStarSearchMT(Problem& p);
+Node AStarSearchED(Problem& p);
 
 struct Tree {
     Node* root;

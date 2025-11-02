@@ -24,9 +24,11 @@ function Graph-Search(problem) returns a solution, or failure
         expand the chosen node, adding the resulting nodes to the frontier
             only if not in the frontier or explored set
 */
-Node UniformCostSearch(Problem p) {
+Node UniformCostSearch(Problem& p) {
     //frontier using initial state
-    priority_queue<Node> frontier;
+    Problem child;
+    Node newChild;
+    priority_queue<Node, vector<Node>, CompareByCost> frontier;
     vector<vector<vector<int>>> explored; //issue with this; prolly 3D vector since each node has 2D vector so we need one higher dimension to store each node
 
     //get initial state and push to frontier 
@@ -34,6 +36,7 @@ Node UniformCostSearch(Problem p) {
     frontier.push(startNode); 
 
     while (!frontier.empty()) {
+        cout << " running it " << endl;
         //choose a leaf node and remove it from the frontier
         Node curr = frontier.top();
         frontier.pop();
@@ -55,7 +58,7 @@ Node UniformCostSearch(Problem p) {
         //only if not in the frontier or explored set
         //here call up down left right functions
 
-        Problem child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
+        child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
         //either fix this or fix up down left right func because they modify child everytime so it does up down left right on same child
         //^^^^ IMPORTANT&&&&&
         for (int i = 0; i < 4; ++i) { //go through each up down left right func
@@ -77,28 +80,29 @@ Node UniformCostSearch(Problem p) {
         //do for each loop 
         //fix this since it doesnt work properly
         bool inExplored = false;
-        for (vector<vector<int>> x : explored) { //go through each element in explored
-            if (x == child.initial_state) { //means we do not add to frontier since we already popped and explored it from vector explored
-                inExplored = true;
-                break;
-            }
-        }
+        // for (vector<vector<int>> x : explored) { //go through each element in explored
+        //     if (x == child.initial_state) { //means we do not add to frontier since we already popped and explored it from vector explored
+        //         inExplored = true;
+        //         break;
+        //     }
+        // }
 
         if (!inExplored) { //only runs if a child or leaf node/state is not in explored set (maybe add for frontier too?)
             //i think frontier will always add expanded node unless it is goal state to explored so i dont think so?
-            Node newChild(child); 
+            newChild = Node(child); 
             newChild.gCost = curr.gCost + 1; 
             newChild.depth = curr.depth + 1;
             frontier.push(newChild);
         }
     }
+    return newChild;  // i think so; think about it later it's late at night
 }
 
-Node AStarSearchMT(Problem p) {
+Node AStarSearchMT(Problem& p) {
     cout << "Not yet implemented. 2" << endl;
 }
 
-Node AStarSearchED(Problem p) {
+Node AStarSearchED(Problem& p) {
     cout << "Not yet implemented. 3" << endl;
 }
 

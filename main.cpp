@@ -36,14 +36,15 @@ int main() {
     cout << "A* with the Euclidean distance heuristic" << endl;
     cin >> algoChoice;
 
+    Node goalNode;
     if (algoChoice == 1) {
-        UniformCostSearch(p);
+        goalNode = UniformCostSearch(p);
     }
     else if (algoChoice == 2) {
-        AStarSearchMT(p);
+        goalNode = AStarSearchMT(p);
     }
     else if (algoChoice == 3) {
-        AStarSearchED(p);
+        goalNode = AStarSearchED(p);
     }
 
     //call correspodning function based on algochoice and that fnction can call 
@@ -54,9 +55,11 @@ int main() {
     //8 puzzle cant be solved?
 
     //for these three statements, maybe do it in the function itself and not here?
-    cout << "To solve this problem the search algorithm expanded a total of XXX (correct numbers should appear here) nodes." << endl;
-    cout << "The maximum number of nodes in the queue at any one time: YYY." << endl;
-    cout << "The depth of the goal node was ZZZ." << endl;  
+    // cout << "To solve this problem the search algorithm expanded a total of XXX (correct numbers should appear here) nodes." << endl;
+    cout << "To solve this problem the search algorithm expanded a total of " << p.totalExpandedNodes << " nodes." << endl;
+    // cout << "The maximum number of nodes in the queue at any one time: YYY." << endl;
+    cout << "The maximum number of nodes in the queue at any one time: " << p.maxNumberOfNodesInQueue << "." << endl;
+    cout << "The depth of the goal node was " << goalNode.depth << '.' << endl;  
 
     return 0;
 }
