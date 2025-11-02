@@ -33,8 +33,8 @@ struct Problem {
     bool isSolvable(const vector<vector<int>> s);
 
     //utilize goal state coordinates to calculate each distance
-    double euclideanDist(Problem p);
-    int misplacedTileDist(Problem p);
+    double euclideanDist(vector<vector<int>> currState);
+    int misplacedTileDist(vector<vector<int>> currState);
 };
 
 struct Node {
@@ -69,13 +69,8 @@ struct Node {
         bool compareHCost(const Node* a, const Node* b) {return a->hCost < b->hCost;};
         int getGCost() {return this->gCost;};
         int getHCost() {return this->hCost;};
-        int getFCost() {return this->fCost;};
+        int getFCost() {return this->gCost + this->hCost;};
 };
-
-//global funcs
-Node UniformCostSearch(Problem& p);
-Node AStarSearchMT(Problem& p);
-Node AStarSearchED(Problem& p);
 
 struct Tree {
     Node* root;
@@ -102,4 +97,15 @@ struct State{
 
 };
 
+struct CompareByCost {
+    bool operator()(const Node& a, const Node& b) const {
+        return (a.fCost > b.fCost);
+    }
+};
+
 void printState(const vector<vector<int>>& s);
+
+//global funcs
+Node UniformCostSearch(Problem& p);
+Node AStarSearchMT(Problem& p);
+Node AStarSearchED(Problem& p);
