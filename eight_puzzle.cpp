@@ -38,17 +38,18 @@ Node UniformCostSearch(Problem& p) {
     Node startNode(p);
     frontier.push(startNode); 
 
+    if (!p.isSolvable(p.initial_state)) {
+        cout << "This puzzle is not solvable." << endl;
+        return startNode; //returning startNode since we have to return something; think about it later
+    }
+
     while (!frontier.empty()) {
-        cout << " running it " << endl;
         //choose a leaf node and remove it from the frontier
         Node curr = frontier.top();
         frontier.pop();
 
         //for text print out in main at end for total expanded nodes and max nodes in queue 
         p.totalExpandedNodes++;
-        if (frontier.size() > p.maxNumberOfNodesInQueue) {
-            p.maxNumberOfNodesInQueue = frontier.size();
-        }
 
         //if the node contains a goal statae then return the corresponding solution
         if (curr.problem.initial_state == p.goal_state) {
@@ -73,24 +74,49 @@ Node UniformCostSearch(Problem& p) {
         child3.left(); //i believe up down left right func modifies it in function itself and doesnt return anything
         child4.right();
 
-        //only if not in the frontier or explored set
-        //do for each loop 
-        //fix this since it doesnt work properly
-        bool inExplored = false;
-        for (vector<vector<int>> x : explored) { //go through each element in explored
-            if (x == child1.initial_state) { //means we do not add to frontier since we already popped and explored it from vector explored
-                inExplored = true;
-                break;
-            }
-        }
-
-        if (!inExplored) { //only runs if a child or leaf node/state is not in explored set (maybe add for frontier too?)
-            //i think frontier will always add expanded node unless it is goal state to explored so i dont think so?
-            newChild = Node(child); 
+        if (!inExplored(explored, child1.initial_state) && !inFrontier(frontier, child1.initial_state) && child1.initial_state != curr.problem.initial_state) {
+            newChild = Node(child1); 
             newChild.gCost = curr.gCost + 1; 
             newChild.depth = curr.depth + 1;
             frontier.push(newChild);
         }
+        if (!inExplored(explored, child2.initial_state) && !inFrontier(frontier, child2.initial_state) && child2.initial_state != curr.problem.initial_state) {
+            newChild = Node(child2); 
+            newChild.gCost = curr.gCost + 1; 
+            newChild.depth = curr.depth + 1;
+            frontier.push(newChild);
+        }
+        if (!inExplored(explored, child3.initial_state) && !inFrontier(frontier, child3.initial_state) && child3.initial_state != curr.problem.initial_state) {
+            newChild = Node(child3); 
+            newChild.gCost = curr.gCost + 1; 
+            newChild.depth = curr.depth + 1;
+            frontier.push(newChild);
+        }
+        if (!inExplored(explored, child4.initial_state) && !inFrontier(frontier, child4.initial_state) && child4.initial_state != curr.problem.initial_state) {
+            newChild = Node(child4); 
+            newChild.gCost = curr.gCost + 1; 
+            newChild.depth = curr.depth + 1;
+            frontier.push(newChild);
+        }
+
+        if (frontier.size() > p.maxNumberOfNodesInQueue) {
+            p.maxNumberOfNodesInQueue = frontier.size();
+        }
+
+        //only if not in the frontier or explored set
+        //do for each loop 
+        //fix this since it doesnt work properly
+        // bool inExplored = false;
+
+        //i think if u cant switch in up down left or right func and it returns same state, then dont add to frontier so we need to check for that
+
+        // if (!inExplored) { //only runs if a child or leaf node/state is not in explored set (maybe add for frontier too?)
+        //     //i think frontier will always add expanded node unless it is goal state to explored so i dont think so?
+        //     newChild = Node(child); 
+        //     newChild.gCost = curr.gCost + 1; 
+        //     newChild.depth = curr.depth + 1;
+        //     frontier.push(newChild);
+        // }
     }
     return newChild;  // i think so; think about it later it's late at night
 }
@@ -101,6 +127,26 @@ Node AStarSearchMT(Problem& p) {
 
 Node AStarSearchED(Problem& p) {
     cout << "Not yet implemented. 3" << endl;
+}
+
+bool inFrontier(priority_queue<Node, vector<Node>, CompareByCost> frontier, const vector<vector<int>>& state) {
+    while (!frontier.empty()) {
+        Node curr = frontier.top();
+        frontier.pop();
+        if (curr.problem.initial_state == state) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool inExplored(const vector<vector<vector<int>>>& explored, const vector<vector<int>>& state) {
+    for (auto& x : explored) {
+        if (x == state) {
+            return true;
+        }
+    }
+    return false;
 }
 
 double Problem::euclideanDist(vector<vector<int>> currState) {
@@ -212,8 +258,8 @@ void Problem::left(){
 
     //Swapping the two values:
     int backup = initial_state[y][x];
-    initial_state[y][x] = initial_state[y][x+1];
-    initial_state[y][x+1] = backup;
+    initial_state[y][x] = initial_state[y][x-1];
+    initial_state[y][x-1] = backup;
 }
 
 void Problem::right(){

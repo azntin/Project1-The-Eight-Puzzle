@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
@@ -109,3 +110,7 @@ void printState(const vector<vector<int>>& s);
 Node UniformCostSearch(Problem& p);
 Node AStarSearchMT(Problem& p);
 Node AStarSearchED(Problem& p);
+bool inFrontier(priority_queue<Node, vector<Node>, CompareByCost> frontier, const vector<vector<int>>& state);
+bool inExplored(const vector<vector<vector<int>>>& explored, const vector<vector<int>>& state);
+//put helper funcs here like infrontier or inexplored
+//i think if u cant switch in up down left or right func and it returns same state, then dont add to frontier so we need to check for that
