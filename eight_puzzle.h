@@ -109,6 +109,12 @@ struct CompareByCost {
     }
 };
 
+struct CompareByFCost {
+    bool operator()(const Node& a, const Node& b) const {
+        return (a.fCost > b.fCost);
+    }
+};
+
 void printState(const vector<vector<int>>& s);
 
 //global funcs

@@ -3,6 +3,7 @@
 #include <cmath>
 #include <queue>
 #include <unordered_set>
+#include <functional>
 #include <string>
 #include "eight_puzzle.h"
 
@@ -48,8 +49,7 @@ Node UniformCostSearch(Problem& p) {
     //unordered_set<string> explored;
     //get initial state and push to frontier 
     Node startNode(p);
-
-    
+    startNode.gCost = 0;
 
     frontier.push(startNode);
     frontierSet.insert(stateToString(startNode.problem.initial_state));
@@ -153,7 +153,95 @@ Node AStarSearchMT(Problem& p) {
 }
 
 Node AStarSearchED(Problem& p) {
-    cout << "Not yet implemented. 3" << endl;
+    //frontier using initial state
+    Node newChild;
+    priority_queue<Node, vector<Node>, CompareByFCost> frontier;
+
+    unordered_set<string> explored;
+    unordered_set<string> frontierSet;
+    //unordered_set<string> explored;
+    //get initial state and push to frontier 
+    Node startNode(p);
+    startNode.gCost = 0;
+
+    frontier.push(startNode);
+    frontierSet.insert(stateToString(startNode.problem.initial_state));
+
+    if (!p.isSolvable(p.initial_state)) {
+        cout << "This puzzle is not solvable." << endl;
+        return startNode; //returning startNode since we have to return something; think about it later
+    }
+
+    while (!frontier.empty()) {
+        //choose a leaf node and remove it from the frontier
+        Node curr = frontier.top();
+        frontier.pop();
+        frontierSet.erase(stateToString(curr.problem.initial_state));
+
+        //for text print out in main at end for total expanded nodes and max nodes in queue 
+        
+
+        if (curr.problem.initial_state == p.goal_state) {
+            return curr;
+        }
+
+        //if the node contains a goal statae then return the corresponding solution
+        //add the node to the explored set
+        explored.insert(stateToString(curr.problem.initial_state));
+
+        //expand the chosen node, adding the resulting nodes to the frontier
+        //only if not in the frontier or explored set
+        //here call up down left right functions
+
+        //Problem child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
+        //either fix this or fix up down left right func because they modify child everytime so it does up down left right on same child
+        //^^^^ IMPORTANT&&&&&
+        for (int i = 0; i < 4; ++i) { //go through each up down left right func
+            Problem child = curr.problem;
+            if (i == 0) {
+                child.up();
+            }
+            else if (i == 1) {
+                child.down();
+            }
+            else if (i == 2) {
+                child.left();
+            }
+            else if (i == 3) {
+                child.right();
+            }
+
+            if (child.initial_state == curr.problem.initial_state) {
+                continue;
+            }
+
+            string childKey = stateToString(child.initial_state);
+
+            if (frontierSet.find(childKey) != frontierSet.end()) {
+                continue;
+            }
+
+            if (explored.find(childKey) != explored.end()) {
+                continue;
+            }
+
+            p.totalExpandedNodes++;
+
+            Node newChild(child);
+            newChild.gCost = curr.gCost + 1;
+            newChild.hCost = p.euclideanDist(child.initial_state);
+            newChild.fCost = newChild.gCost + newChild.hCost;
+            newChild.depth = curr.depth + 1;
+            frontier.push(newChild);
+            frontierSet.insert(childKey);
+
+            if (frontier.size() > p.maxNumberOfNodesInQueue) {
+                p.maxNumberOfNodesInQueue = frontier.size();
+            }
+        }
+    }
+    Node failNode;
+    return failNode;
 }
 
 bool inFrontier(priority_queue<Node, vector<Node>, CompareByCost> frontier, const vector<vector<int>>& state) {
