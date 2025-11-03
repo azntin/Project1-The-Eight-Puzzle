@@ -7,28 +7,30 @@ using namespace std;
 int main() {
     int puzzleChoice;
     int algoChoice;
+    int userPuzzleInput;
     Problem p;
+    Node* goalNode;
 
-    cout << "Welcome to 8 puzzle solver." << endl; // add student ID here ?
+    cout << "Welcome to 8 puzzle solver." << endl; 
+    cout << "Student IDs: Brian Byun - 862346988, ..." << endl;
     cout << "Type '1' to use a default puzzle, or '2' to enter your own puzzle." << endl;
     cin >> puzzleChoice;
 
     if (puzzleChoice == 1) {
-        p = Problem(); //default puzzle
+        p = Problem(); //Default hardcoded puzzle
     }
     if (puzzleChoice == 2) { 
         cout << "Enter your puzzle, use a zero to represent the blank." << endl;
-        cout << "The puzzle will be filled in row-major order, meaning it fills each column of every row." << endl;
-        int input;
+        cout << "The puzzle will be filled in row-major order, meaning it fills each column of every row. Enter each number separately." << endl;
         vector<vector<int>> userPuzzle(3, vector<int>(3, 0));
 
-        for (int i = 0; i < 3; ++i) { //takes input and fills puzzle correctly
+        for (int i = 0; i < 3; ++i) { //Just fills puzzle row by row
             for (int j = 0; j < 3; ++j) {
-                cin >> input;
-                userPuzzle[i][j] = input;
+                cin >> userPuzzleInput;
+                userPuzzle[i][j] = userPuzzleInput;
             }
         }
-        p = Problem(userPuzzle);
+        p = Problem(userPuzzle); //Set initial state to custom puzzle
     }
     cout << "Enter your choice of algorithm" << endl;
     cout << "Uniform Cost Search " << endl;
@@ -36,7 +38,7 @@ int main() {
     cout << "A* with the Euclidean distance heuristic" << endl;
     cin >> algoChoice;
 
-    Node* goalNode;
+    //Call corresponding algo 
     if (algoChoice == 1) {
         goalNode = UniformCostSearch(p);
         if (!(p.isSolvable(p.initial_state))) { return 1; }
@@ -49,18 +51,8 @@ int main() {
         goalNode = AStarSearchED(p);
         if (!(p.isSolvable(p.initial_state))) { return 1; }
     }
-
-    //call correspodning function based on algochoice and that fnction can call 
-    //func drawPath to show expanding the node and best choice... stuff from project
-
-
-    cout << "Goal!!!" << endl; //maybe remove this because there are some cases where 
-    //8 puzzle cant be solved?
-
-    //for these three statements, maybe do it in the function itself and not here?
-    // cout << "To solve this problem the search algorithm expanded a total of XXX (correct numbers should appear here) nodes." << endl;
+    cout << "Goal!!!" << endl; 
     cout << "To solve this problem the search algorithm expanded a total of " << p.totalExpandedNodes << " nodes." << endl;
-    // cout << "The maximum number of nodes in the queue at any one time: YYY." << endl;
     cout << "The maximum number of nodes in the queue at any one time: " << p.maxNumberOfNodesInQueue << "." << endl;
     cout << "The depth of the goal node was " << goalNode->depth << '.' << endl;  
 
