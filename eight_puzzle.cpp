@@ -2,7 +2,8 @@
 #include <iostream>
 #include <cmath>
 #include <queue>
-#include <set>
+#include <unordered_set>
+#include <string>
 #include "eight_puzzle.h"
 
 using namespace std;
@@ -26,6 +27,15 @@ function Graph-Search(problem) returns a solution, or failure
             only if not in the frontier or explored set
 
 */
+
+string stateToString(const vector<vector<int>>& state) {
+    string s;
+    for (auto& row : state)
+        for (int val : row)
+            s += to_string(val);
+    return s;
+}
+
 Node UniformCostSearch(Problem& p) {
     //frontier using initial state
     Node newChild;
@@ -34,15 +44,15 @@ Node UniformCostSearch(Problem& p) {
 
 
     unordered_set<string> explored;
+    unordered_set<string> frontierSet;
     //unordered_set<string> explored;
     //get initial state and push to frontier 
     Node startNode(p);
 
-    startNode.gCost = 0;
-    startNode.depth = 0;
+    
 
     frontier.push(startNode);
-
+    frontierSet.insert(stateToString(startNode.problem.initial_state));
 
     if (!p.isSolvable(p.initial_state)) {
         cout << "This puzzle is not solvable." << endl;
@@ -53,6 +63,7 @@ Node UniformCostSearch(Problem& p) {
         //choose a leaf node and remove it from the frontier
         Node curr = frontier.top();
         frontier.pop();
+        frontierSet.erase(stateToString(curr.problem.initial_state));
 
         //for text print out in main at end for total expanded nodes and max nodes in queue 
         
@@ -63,7 +74,8 @@ Node UniformCostSearch(Problem& p) {
 
         //if the node contains a goal statae then return the corresponding solution
         //add the node to the explored set
-        explored.push_back(curr.problem.initial_state); 
+        //explored.push_back(curr.problem.initial_state); 
+        explored.insert(stateToString(curr.problem.initial_state));
 
         //expand the chosen node, adding the resulting nodes to the frontier
         //only if not in the frontier or explored set
@@ -74,7 +86,6 @@ Node UniformCostSearch(Problem& p) {
         //^^^^ IMPORTANT&&&&&
         for (int i = 0; i < 4; ++i) { //go through each up down left right func
             Problem child = curr.problem;
-            p.totalExpandedNodes++;
             if (i == 0) {
                 child.up(); //i believe up down left right func modifies it in function itself and doesnt return anything
             }
@@ -92,18 +103,23 @@ Node UniformCostSearch(Problem& p) {
                 continue;
             }
 
-            if (inFrontier(frontier, child.initial_state)) {
+            string childKey = stateToString(child.initial_state);
+
+            if (frontierSet.find(childKey) != frontierSet.end()) {
                 continue;
             }
 
-            if (inExplored(explored, child.initial_state)) {
+            if (explored.find(childKey) != explored.end()) {
                 continue;
             }
+
+            p.totalExpandedNodes++;
 
             Node newChild(child);
             newChild.gCost = curr.gCost + 1;
             newChild.depth = curr.depth + 1;
             frontier.push(newChild);
+            frontierSet.insert(childKey);
 
             if (frontier.size() > p.maxNumberOfNodesInQueue) {
                 p.maxNumberOfNodesInQueue = frontier.size();
@@ -128,7 +144,8 @@ Node UniformCostSearch(Problem& p) {
         // }
         }
     }
-    return newChild;
+    Node failNode;
+    return failNode;
 }
 
 Node AStarSearchMT(Problem& p) {
