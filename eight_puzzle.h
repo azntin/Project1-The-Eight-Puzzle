@@ -40,42 +40,36 @@ struct Problem {
 };
 
 struct Node {
-    public:
-        Problem problem;
-        Node* parent;
-        Node* left;
-        Node* right;
-        int gCost; // cost from the start
-        int hCost; // heuristic goal
-        int fCost; // g(n) + h(n)
-        int depth; //use for depth function 
-        bool operator<(const Node& other) const {
-            return gCost > other.gCost; // Reverse for min-heap behavior
-            }
-
-        //ctor
-        Node() {
-            parent = nullptr; left = nullptr; right = nullptr;
-            gCost = 0; hCost = 0; fCost = 0;
-            problem = Problem({{0,0,0},{0,0,0},{0,0,0}});
-            depth = 0;
+    Problem problem;
+    Node* parent;
+    int gCost; // cost from the start
+    int hCost; // heuristic goal
+    int fCost; // g(n) + h(n)
+    int depth; //use for depth function 
+    bool operator<(const Node& other) const {
+        return gCost > other.gCost; // Reverse for min-heap behavior
         }
 
-        Node(Problem p) {
-            parent = nullptr; left = nullptr; right = nullptr;
-            gCost = 0; hCost = 0; fCost = 0;
-            problem = p;
-            depth = 0;
-        }
+    //ctor
+    Node() {
+        parent = nullptr;
+        gCost = 0; hCost = 0; fCost = 0;
+        problem = Problem({{0,0,0},{0,0,0},{0,0,0}});
+        depth = 0;
+    }
 
-        ~Node() {}
+    Node(Problem p) {
+        parent = nullptr;
+        gCost = 0; hCost = 0; fCost = 0;
+        problem = p;
+        depth = 0;
+    }
 
-        //functions
-        bool compareGCost(const Node* a, const Node* b) {return a->gCost < b->gCost;};
-        bool compareHCost(const Node* a, const Node* b) {return a->hCost < b->hCost;};
-        int getGCost() {return this->gCost;};
-        int getHCost() {return this->hCost;};
-        int getFCost() {return this->gCost + this->hCost;};
+    ~Node() {}
+
+    //functions
+    bool compareGCost(const Node* a, const Node* b) {return a->gCost < b->gCost;};
+    bool compareHCost(const Node* a, const Node* b) {return a->hCost < b->hCost;};
 };
 
 struct Tree {
@@ -104,23 +98,23 @@ struct State{
 };
 
 struct CompareByCost {
-    bool operator()(const Node& a, const Node& b) const {
-        return (a.gCost > b.gCost);
+    bool operator()(const Node* a, const Node* b) const {
+        return (a->gCost > b->gCost);
     }
 };
 
 struct CompareByFCost {
-    bool operator()(const Node& a, const Node& b) const {
-        return (a.fCost > b.fCost);
+    bool operator()(const Node* a, const Node* b) const {
+        return (a->fCost > b->fCost);
     }
 };
 
 void printState(const vector<vector<int>>& s);
 
 //global funcs
-Node UniformCostSearch(Problem& p);
-Node AStarSearchMT(Problem& p);
-Node AStarSearchED(Problem& p);
+Node* UniformCostSearch(Problem& p);
+Node* AStarSearchMT(Problem& p);
+Node* AStarSearchED(Problem& p);
 string stateToString(const vector<vector<int>>& state);
 // bool inFrontier(priority_queue<Node, vector<Node>, CompareByCost> frontier, const vector<vector<int>>& state);
 // bool inExplored(const vector<vector<vector<int>>>& explored, const vector<vector<int>>& state);

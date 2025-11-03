@@ -3,79 +3,57 @@
 #include <cmath>
 #include <queue>
 #include <unordered_set>
-#include <functional>
 #include <string>
 #include "eight_puzzle.h"
 
 using namespace std;
 
-//global funcs for searching algorithms
-
-/*
-function Graph-Search(problem) returns a solution, or failure
-    initialize frontier using the initial state of problem
-    initialize the explored set to be empty
-    loop do
-        if the frontier is empty then return failure
-
-        choose a leaf node and remove it from the frontier
-
-        if the node contains a goal statae then return the corresponding solution
-
-        add the node to the explored set
-
-        expand the chosen node, adding the resulting nodes to the frontier
-            only if not in the frontier or explored set
-
-*/
-
-string stateToString(const vector<vector<int>>& state) {
-    string s;
-    for (auto& row : state)
-        for (int val : row)
-            s += to_string(val);
-    return s;
-}
-
-Node UniformCostSearch(Problem& p) {
+Node* UniformCostSearch(Problem& p) {
     //frontier using initial state
     Node newChild;
-    priority_queue<Node, vector<Node>, CompareByCost> frontier;
-    //vector<vector<vector<int>>> explored; //issue with this; prolly 3D vector since each node has 2D vector so we need one higher dimension to store each node
-
+    priority_queue<Node*, vector<Node*>, CompareByCost> frontier;
 
     unordered_set<string> explored;
     unordered_set<string> frontierSet;
-    //unordered_set<string> explored;
     //get initial state and push to frontier 
-    Node startNode(p);
-    startNode.gCost = 0;
+    Node* startNode = new Node(p);
 
     frontier.push(startNode);
-    frontierSet.insert(stateToString(startNode.problem.initial_state));
+    frontierSet.insert(stateToString(startNode->problem.initial_state));
 
     if (!p.isSolvable(p.initial_state)) {
         cout << "This puzzle is not solvable." << endl;
-        return startNode; //returning startNode since we have to return something; think about it later
+        return startNode; 
     }
 
     while (!frontier.empty()) {
         //choose a leaf node and remove it from the frontier
-        Node curr = frontier.top();
+        Node* curr = frontier.top();
         frontier.pop();
-        frontierSet.erase(stateToString(curr.problem.initial_state));
+        frontierSet.erase(stateToString(curr->problem.initial_state));
 
         //for text print out in main at end for total expanded nodes and max nodes in queue 
         
-
-        if (curr.problem.initial_state == p.goal_state) {
+        if (curr->problem.initial_state == p.goal_state) {
+            vector<Node*> path; //Use to store path 
+            Node* trace = curr;
+            while (true) {
+                path.push_back(trace);
+                if (trace->parent == nullptr) break;
+                trace = trace->parent;
+            }
+            cout << "Printing solution here: " << endl;
+            for (int i = path.size() - 1; i >= 0; --i) {
+                printState(path[i]->problem.initial_state);
+                cout << "-------------" << endl;
+            }
             return curr;
         }
 
         //if the node contains a goal statae then return the corresponding solution
         //add the node to the explored set
         //explored.push_back(curr.problem.initial_state); 
-        explored.insert(stateToString(curr.problem.initial_state));
+        explored.insert(stateToString(curr->problem.initial_state));
 
         //expand the chosen node, adding the resulting nodes to the frontier
         //only if not in the frontier or explored set
@@ -85,7 +63,7 @@ Node UniformCostSearch(Problem& p) {
         //either fix this or fix up down left right func because they modify child everytime so it does up down left right on same child
         //^^^^ IMPORTANT&&&&&
         for (int i = 0; i < 4; ++i) { //go through each up down left right func
-            Problem child = curr.problem;
+            Problem child = curr->problem;
             if (i == 0) {
                 child.up(); //i believe up down left right func modifies it in function itself and doesnt return anything
             }
@@ -99,7 +77,7 @@ Node UniformCostSearch(Problem& p) {
                 child.right();
             }
 
-            if (child.initial_state == curr.problem.initial_state) {
+            if (child.initial_state == curr->problem.initial_state) {
                 continue;
             }
 
@@ -115,9 +93,10 @@ Node UniformCostSearch(Problem& p) {
 
             p.totalExpandedNodes++;
 
-            Node newChild(child);
-            newChild.gCost = curr.gCost + 1;
-            newChild.depth = curr.depth + 1;
+            Node* newChild = new Node(child);
+            newChild->parent = curr;
+            newChild->gCost = curr->gCost + 1;
+            newChild->depth = curr->depth + 1;
             frontier.push(newChild);
             frontierSet.insert(childKey);
 
@@ -144,112 +123,25 @@ Node UniformCostSearch(Problem& p) {
         // }
         }
     }
-    Node failNode;
-    return failNode;
+    return nullptr;
 }
 
-Node AStarSearchMT(Problem& p) {
+Node* AStarSearchMT(Problem& p) {
     //frontier using initial state
-    Node newChild;
-    priority_queue<Node, vector<Node>, CompareByFCost> frontier;
-
-    unordered_set<string> explored;
-    unordered_set<string> frontierSet;
-    
-    //get initial state and push to frontier 
-    Node startNode(p);
-    startNode.gCost = 0;
-    startNode.hCost = p.misplacedTileDist(p.initial_state);
-    startNode.fCost = startNode.gCost + startNode.hCost;
-
-    frontier.push(startNode);
-    frontierSet.insert(stateToString(startNode.problem.initial_state));
-
-    if (!p.isSolvable(p.initial_state)) {
-        cout << "This puzzle is not solvable." << endl;
-        return startNode; //returning startNode since we have to return something; think about it later
-    }
-
-    while (!frontier.empty()) {
-        //choose a leaf node and remove it from the frontier
-        Node curr = frontier.top();
-        frontier.pop();
-        frontierSet.erase(stateToString(curr.problem.initial_state));
-
-        //for text print out in main at end for total expanded nodes and max nodes in queue    
-
-        if (curr.problem.initial_state == p.goal_state) {
-            return curr;
-        }
-
-        //if the node contains a goal statae then return the corresponding solution
-        //add the node to the explored set
-        explored.insert(stateToString(curr.problem.initial_state));
-
-        for (int i = 0; i < 4; ++i) { //go through each up down left right func
-            Problem child = curr.problem;
-            if (i == 0) {
-                child.up();
-            }
-            else if (i == 1) {
-                child.down();
-            }
-            else if (i == 2) {
-                child.left();
-            }
-            else if (i == 3) {
-                child.right();
-            }
-
-            if (child.initial_state == curr.problem.initial_state) {
-                continue;
-            }
-
-            string childKey = stateToString(child.initial_state);
-
-            if (frontierSet.find(childKey) != frontierSet.end()) {
-                continue;
-            }
-
-            if (explored.find(childKey) != explored.end()) {
-                continue;
-            }
-
-            p.totalExpandedNodes++;
-
-            Node newChild(child);
-            newChild.gCost = curr.gCost + 1;
-            newChild.hCost = p.misplacedTileDist(child.initial_state);
-            newChild.fCost = newChild.gCost + newChild.hCost;
-            newChild.depth = curr.depth + 1;
-            frontier.push(newChild);
-            frontierSet.insert(childKey);
-
-            if (frontier.size() > p.maxNumberOfNodesInQueue) {
-                p.maxNumberOfNodesInQueue = frontier.size();
-            }
-        }
-    }
-    Node failNode;
-    return failNode;
-}
-
-Node AStarSearchED(Problem& p) {
-    //frontier using initial state
-    Node newChild;
-    priority_queue<Node, vector<Node>, CompareByFCost> frontier;
+    Node* newChild;
+    priority_queue<Node*, vector<Node*>, CompareByFCost> frontier;
 
     unordered_set<string> explored;
     unordered_set<string> frontierSet;
     //unordered_set<string> explored;
     //get initial state and push to frontier 
-    Node startNode(p);
-    startNode.gCost = 0;
-    startNode.hCost = p.euclideanDist(p.initial_state);
-    startNode.fCost = startNode.gCost + startNode.hCost;
+    Node* startNode = new Node(p);
+    startNode->gCost = 0;
+    startNode->hCost = p.misplacedTileDist(p.initial_state);
+    startNode->fCost = startNode->gCost + startNode->hCost;
 
     frontier.push(startNode);
-    frontierSet.insert(stateToString(startNode.problem.initial_state));
+    frontierSet.insert(stateToString(startNode->problem.initial_state));
 
     if (!p.isSolvable(p.initial_state)) {
         cout << "This puzzle is not solvable." << endl;
@@ -258,22 +150,34 @@ Node AStarSearchED(Problem& p) {
 
     while (!frontier.empty()) {
         //choose a leaf node and remove it from the frontier
-        Node curr = frontier.top();
+        Node* curr = frontier.top();
         frontier.pop();
-        frontierSet.erase(stateToString(curr.problem.initial_state));
+        frontierSet.erase(stateToString(curr->problem.initial_state));
 
         //for text print out in main at end for total expanded nodes and max nodes in queue    
 
-        if (curr.problem.initial_state == p.goal_state) {
+        if (curr->problem.initial_state == p.goal_state) {
+            vector<Node*> path; //Use to store path 
+            Node* trace = curr;
+            while (true) {
+                path.push_back(trace);
+                if (trace->parent == nullptr) break;
+                trace = trace->parent;
+            }
+            cout << "Printing solution here: " << endl;
+            for (int i = path.size() - 1; i >= 0; --i) {
+                printState(path[i]->problem.initial_state);
+                cout << "-------------" << endl;
+            }
             return curr;
         }
 
         //if the node contains a goal statae then return the corresponding solution
         //add the node to the explored set
-        explored.insert(stateToString(curr.problem.initial_state));
+        explored.insert(stateToString(curr->problem.initial_state));
 
         for (int i = 0; i < 4; ++i) { //go through each up down left right func
-            Problem child = curr.problem;
+            Problem child = curr->problem;
             if (i == 0) {
                 child.up();
             }
@@ -287,7 +191,7 @@ Node AStarSearchED(Problem& p) {
                 child.right();
             }
 
-            if (child.initial_state == curr.problem.initial_state) {
+            if (child.initial_state == curr->problem.initial_state) {
                 continue;
             }
 
@@ -303,11 +207,12 @@ Node AStarSearchED(Problem& p) {
 
             p.totalExpandedNodes++;
 
-            Node newChild(child);
-            newChild.gCost = curr.gCost + 1;
-            newChild.hCost = p.euclideanDist(child.initial_state);
-            newChild.fCost = newChild.gCost + newChild.hCost;
-            newChild.depth = curr.depth + 1;
+            Node* newChild = new Node(child);
+            newChild->parent = curr;
+            newChild->gCost = curr->gCost + 1;
+            newChild->hCost = p.misplacedTileDist(child.initial_state);
+            newChild->fCost = newChild->gCost + newChild->hCost;
+            newChild->depth = curr->depth + 1;
             frontier.push(newChild);
             frontierSet.insert(childKey);
 
@@ -316,28 +221,114 @@ Node AStarSearchED(Problem& p) {
             }
         }
     }
-    Node failNode;
-    return failNode;
+    return nullptr;
 }
 
-bool inFrontier(priority_queue<Node, vector<Node>, CompareByCost> frontier, const vector<vector<int>>& state) {
+Node* AStarSearchED(Problem& p) {
+    //frontier using initial state
+    Node* newChild;
+    priority_queue<Node*, vector<Node*>, CompareByFCost> frontier;
+
+    unordered_set<string> explored;
+    unordered_set<string> frontierSet;
+    //unordered_set<string> explored;
+    //get initial state and push to frontier 
+    Node* startNode = new Node(p);
+    startNode->gCost = 0;
+    startNode->hCost = p.euclideanDist(p.initial_state);
+    startNode->fCost = startNode->gCost + startNode->hCost;
+
+    frontier.push(startNode);
+    frontierSet.insert(stateToString(startNode->problem.initial_state));
+
+    if (!p.isSolvable(p.initial_state)) {
+        cout << "This puzzle is not solvable." << endl;
+        return startNode; //returning startNode since we have to return something; think about it later
+    }
+
     while (!frontier.empty()) {
-        Node curr = frontier.top();
+        //choose a leaf node and remove it from the frontier
+        Node* curr = frontier.top();
         frontier.pop();
-        if (curr.problem.initial_state == state) {
-            return true;
+        frontierSet.erase(stateToString(curr->problem.initial_state));
+
+        //for text print out in main at end for total expanded nodes and max nodes in queue    
+
+        if (curr->problem.initial_state == p.goal_state) { //Current state/node matches goal state, thus return that state/node
+            vector<Node*> path; //Use to store path 
+            Node* trace = curr;
+            while (true) {
+                path.push_back(trace);
+                if (trace->parent == nullptr) break;
+                trace = trace->parent;
+            }
+            cout << "Printing solution here: " << endl;
+            for (int i = path.size() - 1; i >= 0; --i) {
+                printState(path[i]->problem.initial_state);
+                cout << "-------------" << endl;
+            }
+
+            return curr;
+        }
+
+        //if the node contains a goal statae then return the corresponding solution
+        //add the node to the explored set
+        explored.insert(stateToString(curr->problem.initial_state));
+
+        for (int i = 0; i < 4; ++i) { //go through each up down left right func
+            Problem child = curr->problem;
+            if (i == 0) {
+                child.up();
+            }
+            else if (i == 1) {
+                child.down();
+            }
+            else if (i == 2) {
+                child.left();
+            }
+            else if (i == 3) {
+                child.right();
+            }
+
+            if (child.initial_state == curr->problem.initial_state) {
+                continue;
+            }
+
+            string childKey = stateToString(child.initial_state);
+
+            if (frontierSet.find(childKey) != frontierSet.end()) {
+                continue;
+            }
+
+            if (explored.find(childKey) != explored.end()) {
+                continue;
+            }
+
+            p.totalExpandedNodes++;
+
+            Node* newChild = new Node(child);
+            newChild->parent = curr;
+            newChild->gCost = curr->gCost + 1;
+            newChild->hCost = p.euclideanDist(child.initial_state);
+            newChild->fCost = newChild->gCost + newChild->hCost;
+            newChild->depth = curr->depth + 1;
+            frontier.push(newChild);
+            frontierSet.insert(childKey);
+
+            if (frontier.size() > p.maxNumberOfNodesInQueue) {
+                p.maxNumberOfNodesInQueue = frontier.size();
+            }
         }
     }
-    return false;
+    return nullptr;
 }
 
-bool inExplored(const vector<vector<vector<int>>>& explored, const vector<vector<int>>& state) {
-    for (auto& x : explored) {
-        if (x == state) {
-            return true;
-        }
-    }
-    return false;
+string stateToString(const vector<vector<int>>& state) {
+    string s;
+    for (auto& row : state)
+        for (int val : row)
+            s += to_string(val);
+    return s;
 }
 
 double Problem::euclideanDist(vector<vector<int>> currState) {
@@ -387,7 +378,7 @@ int Problem::misplacedTileDist(vector<vector<int>> currState) {
 void printState(const vector<vector<int>>& s){
     for(int i = 0; i < 3; ++i){
         for(int j = 0; j < 3; ++j){
-            if(s[i][j] == 0){cout << "X";}
+            if(s[i][j] == 0){cout << "b";}
             else{cout << s[i][j];}
         }
         cout << endl;
@@ -490,4 +481,3 @@ bool Problem::isSolvable(const vector<vector<int>> s){
     }
     return (bigBeforeSmall % 2 == 0);
 };
-

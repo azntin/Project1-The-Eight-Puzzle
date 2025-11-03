@@ -36,7 +36,7 @@ int main() {
     cout << "A* with the Euclidean distance heuristic" << endl;
     cin >> algoChoice;
 
-    Node goalNode;
+    Node* goalNode;
     if (algoChoice == 1) {
         goalNode = UniformCostSearch(p);
         if (!(p.isSolvable(p.initial_state))) { return 1; }
@@ -62,7 +62,7 @@ int main() {
     cout << "To solve this problem the search algorithm expanded a total of " << p.totalExpandedNodes << " nodes." << endl;
     // cout << "The maximum number of nodes in the queue at any one time: YYY." << endl;
     cout << "The maximum number of nodes in the queue at any one time: " << p.maxNumberOfNodesInQueue << "." << endl;
-    cout << "The depth of the goal node was " << goalNode.depth << '.' << endl;  
+    cout << "The depth of the goal node was " << goalNode->depth << '.' << endl;  
 
     return 0;
 }
