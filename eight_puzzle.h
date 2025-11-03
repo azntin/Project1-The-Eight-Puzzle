@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <queue>
 
 using namespace std;
 
@@ -34,8 +35,8 @@ struct Problem {
 
 
     //utilize goal state coordinates to calculate each distance
-    double euclideanDist(Problem p);
-    int misplacedTileDist(Problem p);
+    double euclideanDist(vector<vector<int>> currState);
+    int misplacedTileDist(vector<vector<int>> currState);
 };
 
 struct Node {
@@ -74,13 +75,8 @@ struct Node {
         bool compareHCost(const Node* a, const Node* b) {return a->hCost < b->hCost;};
         int getGCost() {return this->gCost;};
         int getHCost() {return this->hCost;};
-        int getFCost() {return this->fCost;};
+        int getFCost() {return this->gCost + this->hCost;};
 };
-
-//global funcs
-Node UniformCostSearch(Problem& p);
-Node AStarSearchMT(Problem p);
-Node AStarSearchED(Problem p);
 
 struct Tree {
     Node* root;
@@ -107,4 +103,19 @@ struct State{
 
 };
 
+struct CompareByCost {
+    bool operator()(const Node& a, const Node& b) const {
+        return (a.fCost > b.fCost);
+    }
+};
+
 void printState(const vector<vector<int>>& s);
+
+//global funcs
+Node UniformCostSearch(Problem& p);
+Node AStarSearchMT(Problem& p);
+Node AStarSearchED(Problem& p);
+bool inFrontier(priority_queue<Node, vector<Node>, CompareByCost> frontier, const vector<vector<int>>& state);
+bool inExplored(const vector<vector<vector<int>>>& explored, const vector<vector<int>>& state);
+//put helper funcs here like infrontier or inexplored
+//i think if u cant switch in up down left or right func and it returns same state, then dont add to frontier so we need to check for that

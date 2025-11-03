@@ -27,11 +27,12 @@ function Graph-Search(problem) returns a solution, or failure
 */
 Node UniformCostSearch(Problem& p) {
     //frontier using initial state
-    if(!p.isSolvable(p.initial_state)){
-        cout << "Not solvable";
-        return Node(p);
-    }
-    priority_queue<Node> frontier;
+    Problem child1;
+    Problem child2;
+    Problem child3;
+    Problem child4;
+    Node newChild;
+    priority_queue<Node, vector<Node>, CompareByCost> frontier;
     vector<vector<vector<int>>> explored; //issue with this; prolly 3D vector since each node has 2D vector so we need one higher dimension to store each node
 
     //get initial state and push to frontier 
@@ -43,6 +44,11 @@ Node UniformCostSearch(Problem& p) {
     frontier.push(startNode);
 
 
+    if (!p.isSolvable(p.initial_state)) {
+        cout << "This puzzle is not solvable." << endl;
+        return startNode; //returning startNode since we have to return something; think about it later
+    }
+
     while (!frontier.empty()) {
         //choose a leaf node and remove it from the frontier
         Node curr = frontier.top();
@@ -50,9 +56,6 @@ Node UniformCostSearch(Problem& p) {
 
         //for text print out in main at end for total expanded nodes and max nodes in queue 
         p.totalExpandedNodes++;
-        if (frontier.size() > p.maxNumberOfNodesInQueue) {
-            p.maxNumberOfNodesInQueue = frontier.size();
-        }
 
         //if the node contains a goal statae then return the corresponding solution
         if (curr.problem.initial_state == p.goal_state) {
@@ -108,32 +111,52 @@ Node UniformCostSearch(Problem& p) {
     return Node(p);
 }
 
-Node AStarSearchMT(Problem p) {
+Node AStarSearchMT(Problem& p) {
     cout << "Not yet implemented. 2" << endl;
 }
 
-Node AStarSearchED(Problem p) {
+Node AStarSearchED(Problem& p) {
     cout << "Not yet implemented. 3" << endl;
 }
 
-double Problem::euclideanDist(Problem p) {
+bool inFrontier(priority_queue<Node, vector<Node>, CompareByCost> frontier, const vector<vector<int>>& state) {
+    while (!frontier.empty()) {
+        Node curr = frontier.top();
+        frontier.pop();
+        if (curr.problem.initial_state == state) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool inExplored(const vector<vector<vector<int>>>& explored, const vector<vector<int>>& state) {
+    for (auto& x : explored) {
+        if (x == state) {
+            return true;
+        }
+    }
+    return false;
+}
+
+double Problem::euclideanDist(vector<vector<int>> currState) {
     double total = 0.0;
     int goalVal, probVal;
-    vector<vector<int>> goal = this->goal_state;
+    vector<vector<int>> goal = this->goal_state; // obtaining a version of the goal state
 
-    for (int r = 0; r < 3; ++r) {
+    for (int r = 0; r < 3; ++r) { // iterate through each tile of the goal state
         for (int c = 0; c < 3; ++c) {
             goalVal = goal[r][c];
-            if (goalVal == 0) { continue; }
+            if (goalVal == 0) { continue; } // if coming across 0, that's the blank, skip it
             bool found = false;
 
-            for (int r1 = 0; r1 < 3 && !found; ++r1) {
+            for (int r1 = 0; r1 < 3 && !found; ++r1) { // iterate through each tile of the puzzle with respect to the goal
                 for (int c1 = 0; c1 < 3; ++c1) {
-                    probVal = p.initial_state[r1][c1];
-                    if(probVal == 0) { continue; }
+                    probVal = currState[r1][c1];
+                    if(probVal == 0) { continue; } // if coming across 0, that's the blank, skip it
 
-                    if (goalVal == probVal) {
-                        total += sqrt(pow((r1 - r),2) + pow((c1 - c),2));
+                    if (goalVal == probVal) { // if the two tiles match, record their positions in the grid
+                        total += sqrt(pow((r1 - r),2) + pow((c1 - c),2)); //perform euclidean distance formula with both positions and sum together
                         found = true;
                         break;
                     }
@@ -144,14 +167,14 @@ double Problem::euclideanDist(Problem p) {
     return total;
 }
 
-int Problem::misplacedTileDist(Problem p) { //maybe change this? because of how the up down left right function and instead send in curr state rather than entire problem p?
+int Problem::misplacedTileDist(vector<vector<int>> currState) {
     int total = 0;
-    vector<vector<int>> goal = this->goal_state;
+    vector<vector<int>> goal = this->goal_state; //obtain a version of the goal state
 
-    for (int r = 0; r < 3; ++r) {
+    for (int r = 0; r < 3; ++r) { // iterate through each tile of the grid
         for (int c = 0; c < 3; ++c) {
-            if (p.initial_state[r][c] == 0) { continue; }
-            if (goal[r][c] != p.initial_state[r][c]) {
+            if (currState[r][c] == 0) { continue; } // if coming across 0, that's the blank, skip it
+            if (goal[r][c] != currState[r][c]) { // for every tile that isn't in the right space (misplaced), increment the total
                 ++total;
             }
         }
@@ -159,6 +182,7 @@ int Problem::misplacedTileDist(Problem p) { //maybe change this? because of how 
     return total;
 }
 
+// prints out the 8 puzzle grid for visual
 void printState(const vector<vector<int>>& s){
     for(int i = 0; i < 3; ++i){
         for(int j = 0; j < 3; ++j){
@@ -169,6 +193,7 @@ void printState(const vector<vector<int>>& s){
     }
 }
 
+// returns coordinates of the blank space in puzzle (0)
 vector<int> findBlank(vector<vector<int>> s){
     vector<int> coordinates;
     for(int i = 0; i < 3; ++i){
@@ -181,6 +206,7 @@ vector<int> findBlank(vector<vector<int>> s){
     }
     return coordinates;
 }
+
 void Problem::up(){
     vector<int> position = findBlank(initial_state);
     int y = position[0];
@@ -241,26 +267,26 @@ void Problem::right(){
     initial_state[y][x+1] = backup;
 }
 bool Problem::isSolvable(const vector<vector<int>> s){
-        vector<int> vec;
-        int currPos;
-        int bigBeforeSmall = 0;
+    vector<int> vec;
+    int currPos;
+    int bigBeforeSmall = 0;
 
-        for(int i = 0; i < 3; ++i){
-            for(int j = 0; j < 3; ++j){
-                currPos = s[i][j];
-                if(currPos != 0){
-                    vec.push_back(currPos);
-                }
+    for(int i = 0; i < 3; ++i){
+        for(int j = 0; j < 3; ++j){
+            currPos = s[i][j];
+            if(currPos != 0){
+                vec.push_back(currPos);
             }
         }
+    }
 
-        for(int i = 0; i < vec.size(); ++i){
-            for(int j = i+1; j < vec.size(); ++j){
-                if(vec[i] > vec[j]){
-                    bigBeforeSmall ++;
-                }
+    for(int i = 0; i < vec.size(); ++i){
+        for(int j = i+1; j < vec.size(); ++j){
+            if(vec[i] > vec[j]){
+                bigBeforeSmall ++;
             }
         }
-        return (bigBeforeSmall % 2 == 0);
-    };
+    }
+    return (bigBeforeSmall % 2 == 0);
+};
 
