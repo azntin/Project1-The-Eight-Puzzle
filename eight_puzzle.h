@@ -15,7 +15,7 @@ struct Problem {
     Problem() { 
         initial_state = {{1, 0, 3},{4, 2, 6},{7, 5, 8}}; 
         totalExpandedNodes = 0;
-        maxNumberOfNodesInQueue = 0;
+        maxNumberOfNodesInQueue = 1;
     }
 
     Problem(vector<vector<int>> init) { 
@@ -105,7 +105,7 @@ struct State{
 
 struct CompareByCost {
     bool operator()(const Node& a, const Node& b) const {
-        return (a.fCost > b.fCost);
+        return (a.gCost > b.gCost);
     }
 };
 
