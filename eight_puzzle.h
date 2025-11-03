@@ -21,7 +21,7 @@ struct Problem {
     Problem(vector<vector<int>> init) { 
         initial_state = init; 
         totalExpandedNodes = 0;
-        maxNumberOfNodesInQueue = 0;
+        maxNumberOfNodesInQueue = 1;
     }
 
     void up();
