@@ -39,12 +39,15 @@ int main() {
     Node goalNode;
     if (algoChoice == 1) {
         goalNode = UniformCostSearch(p);
+        if (!(p.isSolvable(p.initial_state))) { return 1; }
     }
     else if (algoChoice == 2) {
         goalNode = AStarSearchMT(p);
+        if (!(p.isSolvable(p.initial_state))) { return 1; }
     }
     else if (algoChoice == 3) {
         goalNode = AStarSearchED(p);
+        if (!(p.isSolvable(p.initial_state))) { return 1; }
     }
 
     //call correspodning function based on algochoice and that fnction can call 

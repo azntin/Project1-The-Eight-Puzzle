@@ -155,7 +155,7 @@ Node AStarSearchMT(Problem& p) {
 
     unordered_set<string> explored;
     unordered_set<string> frontierSet;
-    //unordered_set<string> explored;
+    
     //get initial state and push to frontier 
     Node startNode(p);
     startNode.gCost = 0;
