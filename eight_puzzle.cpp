@@ -26,7 +26,10 @@ function Graph-Search(problem) returns a solution, or failure
 */
 Node UniformCostSearch(Problem& p) {
     //frontier using initial state
-    Problem child;
+    Problem child1;
+    Problem child2;
+    Problem child3;
+    Problem child4;
     Node newChild;
     priority_queue<Node, vector<Node>, CompareByCost> frontier;
     vector<vector<vector<int>>> explored; //issue with this; prolly 3D vector since each node has 2D vector so we need one higher dimension to store each node
@@ -58,34 +61,28 @@ Node UniformCostSearch(Problem& p) {
         //only if not in the frontier or explored set
         //here call up down left right functions
 
-        child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
+        child1 = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
+        child2 = curr.problem;
+        child3 = curr.problem;
+        child4 = curr.problem;
+        //create each child node for each up down left right
         //either fix this or fix up down left right func because they modify child everytime so it does up down left right on same child
         //^^^^ IMPORTANT&&&&&
-        for (int i = 0; i < 4; ++i) { //go through each up down left right func
-            if (i == 0) {
-                child.up(); //i believe up down left right func modifies it in function itself and doesnt return anything
-            }
-            else if (i == 1) {
-                child.down();
-            }
-            else if (i == 2) {
-                child.left();
-            }
-            else if (i == 3) {
-                child.right();
-            }
-        }
+        child1.up(); //go through each up down left right func
+        child2.down();
+        child3.left(); //i believe up down left right func modifies it in function itself and doesnt return anything
+        child4.right();
 
         //only if not in the frontier or explored set
         //do for each loop 
         //fix this since it doesnt work properly
         bool inExplored = false;
-        // for (vector<vector<int>> x : explored) { //go through each element in explored
-        //     if (x == child.initial_state) { //means we do not add to frontier since we already popped and explored it from vector explored
-        //         inExplored = true;
-        //         break;
-        //     }
-        // }
+        for (vector<vector<int>> x : explored) { //go through each element in explored
+            if (x == child1.initial_state) { //means we do not add to frontier since we already popped and explored it from vector explored
+                inExplored = true;
+                break;
+            }
+        }
 
         if (!inExplored) { //only runs if a child or leaf node/state is not in explored set (maybe add for frontier too?)
             //i think frontier will always add expanded node unless it is goal state to explored so i dont think so?
@@ -185,8 +182,8 @@ void Problem::up(){
 
     //Swapping the two values:
     int backup = initial_state[y][x];
-    initial_state[y][x] = initial_state[y+1][x];
-    initial_state[y+1][x] = backup;
+    initial_state[y][x] = initial_state[y-1][x];
+    initial_state[y-1][x] = backup;
 }
 
 void Problem::down(){
