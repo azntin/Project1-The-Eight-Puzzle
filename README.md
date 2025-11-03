@@ -7,3 +7,7 @@ This program will set out to solve the famous 8-puzzle using various search algo
 * Uniform Cost Search
 * A* with the Misplaced Tile Heuristic
 * A* with the Euclidean Distance Heuristic
+
+The program should also trace the path towards the solution and provide the user a clear visual of how the puzzle is able to be solved. If the puzzle isn't solvable, the program will detect that and immediately return an error to the user.
+
+<img width="724" height="545" alt="Screenshot 2025-11-03 023553" src="https://github.com/user-attachments/assets/08bf14af-4d3c-4933-afc8-94daab60beb0" />
