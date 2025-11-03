@@ -23,15 +23,25 @@ function Graph-Search(problem) returns a solution, or failure
 
         expand the chosen node, adding the resulting nodes to the frontier
             only if not in the frontier or explored set
+
 */
-Node UniformCostSearch(Problem p) {
+Node UniformCostSearch(Problem& p) {
     //frontier using initial state
+    if(!p.isSolvable(p.initial_state)){
+        cout << "Not solvable";
+        return Node(p);
+    }
     priority_queue<Node> frontier;
     vector<vector<vector<int>>> explored; //issue with this; prolly 3D vector since each node has 2D vector so we need one higher dimension to store each node
 
     //get initial state and push to frontier 
     Node startNode(p);
-    frontier.push(startNode); 
+
+    startNode.gCost = 0;
+    startNode.depth = 0;
+
+    frontier.push(startNode);
+
 
     while (!frontier.empty()) {
         //choose a leaf node and remove it from the frontier
@@ -55,10 +65,11 @@ Node UniformCostSearch(Problem p) {
         //only if not in the frontier or explored set
         //here call up down left right functions
 
-        Problem child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
+        //Problem child = curr.problem; //maybe issue here too? outside loop or inside loop; think about it later
         //either fix this or fix up down left right func because they modify child everytime so it does up down left right on same child
         //^^^^ IMPORTANT&&&&&
         for (int i = 0; i < 4; ++i) { //go through each up down left right func
+            Problem child = curr.problem;
             if (i == 0) {
                 child.up(); //i believe up down left right func modifies it in function itself and doesnt return anything
             }
@@ -71,9 +82,9 @@ Node UniformCostSearch(Problem p) {
             else if (i == 3) {
                 child.right();
             }
-        }
 
-        //only if not in the frontier or explored set
+            if (child.initial_state == curr.problem.initial_state){continue;}
+                    //only if not in the frontier or explored set
         //do for each loop 
         //fix this since it doesnt work properly
         bool inExplored = false;
@@ -83,15 +94,18 @@ Node UniformCostSearch(Problem p) {
                 break;
             }
         }
-
-        if (!inExplored) { //only runs if a child or leaf node/state is not in explored set (maybe add for frontier too?)
+            if (!inExplored) { //only runs if a child or leaf node/state is not in explored set (maybe add for frontier too?)
             //i think frontier will always add expanded node unless it is goal state to explored so i dont think so?
             Node newChild(child); 
             newChild.gCost = curr.gCost + 1; 
             newChild.depth = curr.depth + 1;
             frontier.push(newChild);
         }
+        }
+
+
     }
+    return Node(p);
 }
 
 Node AStarSearchMT(Problem p) {
@@ -178,8 +192,8 @@ void Problem::up(){
 
     //Swapping the two values:
     int backup = initial_state[y][x];
-    initial_state[y][x] = initial_state[y+1][x];
-    initial_state[y+1][x] = backup;
+    initial_state[y][x] = initial_state[y-1][x];
+    initial_state[y-1][x] = backup;
 }
 
 void Problem::down(){
@@ -208,8 +222,8 @@ void Problem::left(){
 
     //Swapping the two values:
     int backup = initial_state[y][x];
-    initial_state[y][x] = initial_state[y][x+1];
-    initial_state[y][x+1] = backup;
+    initial_state[y][x] = initial_state[y][x-1];
+    initial_state[y][x-1] = backup;
 }
 
 void Problem::right(){
@@ -226,7 +240,6 @@ void Problem::right(){
     initial_state[y][x] = initial_state[y][x+1];
     initial_state[y][x+1] = backup;
 }
-
 bool Problem::isSolvable(const vector<vector<int>> s){
         vector<int> vec;
         int currPos;

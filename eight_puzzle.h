@@ -32,12 +32,14 @@ struct Problem {
     //If x is even, the puzzle is solvable. Otherwise not.
     bool isSolvable(const vector<vector<int>> s);
 
+
     //utilize goal state coordinates to calculate each distance
     double euclideanDist(Problem p);
     int misplacedTileDist(Problem p);
 };
 
 struct Node {
+    public:
         Problem problem;
         Node* parent;
         Node* left;
@@ -46,6 +48,9 @@ struct Node {
         int hCost; // heuristic goal
         int fCost; // g(n) + h(n)
         int depth; //use for depth function 
+        bool operator<(const Node& other) const {
+            return gCost > other.gCost; // Reverse for min-heap behavior
+            }
 
         //ctor
         Node() {
@@ -73,7 +78,7 @@ struct Node {
 };
 
 //global funcs
-Node UniformCostSearch(Problem p);
+Node UniformCostSearch(Problem& p);
 Node AStarSearchMT(Problem p);
 Node AStarSearchED(Problem p);
 
