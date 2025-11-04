@@ -12,7 +12,7 @@ int main() {
     Node* goalNode;
 
     cout << "Welcome to 8 puzzle solver." << endl; 
-    cout << "Student IDs: Brian Byun - 862346988, ..." << endl;
+    cout << "Student IDs: Brian Byun - 862346988, Justin Tran - 862415264, Aditya Verma - 862441645" << endl;
     cout << "Type '1' to use a default puzzle, or '2' to enter your own puzzle." << endl;
     cin >> puzzleChoice;
 
