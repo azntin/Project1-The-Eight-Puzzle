@@ -3,6 +3,11 @@
   > Authors: \<[Brian Byun](https://github.com/brianubyun), [Aditya Verma](https://github.com/legendaryadityaverma), [Justin Tran](https://github.com/azntin)\>
 > 
 
+SIDS:
+Brian Byun - 862346988
+Justin Tran - 862415264
+Aditya Verma - 862441645
+
 This program will set out to solve the famous 8-puzzle using various search algorithms such as A* search. Here, we will utilize:
 * Uniform Cost Search
 * A* with the Misplaced Tile Heuristic
